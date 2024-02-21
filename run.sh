@@ -1,0 +1,1 @@
+/root/lwan/build/src/samples/ThreeKingdoms2DServer/tk -c /root/lwan/src/samples/ThreeKingdoms2DServer/tk.conf
