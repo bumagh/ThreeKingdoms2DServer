@@ -1,3 +1,7 @@
-/root/work/gitrep/lwan/build/src/samples/ThreeKingdoms2DServer/tk -c /root/work/gitrep/lwan/src/samples/ThreeKingdoms2DServer/tk.conf
+lwanPath=/root/lwan
+tkPath="$lwanPath/build/src/samples/ThreeKingdoms2DServer/tk"
+proPath="$lwanPath/build/src/samples/ThreeKingdoms2DServer"
+tkConfPath="$proPath/tk.conf"
+bash "$tkPath -c $tkConfPath"
 
 #lwan_thread_init

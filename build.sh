@@ -1,7 +1,7 @@
-cd /root/work/gitrep/lwan/build/src/samples/ThreeKingdoms2DServer/src/Model
-make clean
-make
-cd /root/work/gitrep/lwan/build/
+lwanPath=/root/lwan
+buildPath="$lwanPath/build"
+proPath="$lwanPath/build/src/samples/ThreeKingdoms2DServer"
+cd "$buildPath"
 cmake ..
-cd /root/work/gitrep/lwan/build/src/samples/ThreeKingdoms2DServer
+cd "$proPath"
 make

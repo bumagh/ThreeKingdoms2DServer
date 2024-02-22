@@ -1,5 +1,5 @@
 # 自动搜索当前目录及其子目录中的所有 C 文件  
-file(GLOB_RECURSE SOURCES "src/*.c")  
+file(GLOB_RECURSE SOURCES "src/main.c")  
 
 add_executable(tk
 	${SOURCES}
