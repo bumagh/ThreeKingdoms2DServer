@@ -5,43 +5,40 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-LWAN_HANDLER_ROUTE (login, "/login")
+LWAN_HANDLER_ROUTE(login, "/login")
 {
     request->response.mime_type = "text/html;charset=utf-8";
     char data_buf_fmt[256] = "{\"%s\":\"%s\"}";
     char response_buf_fmt[256] = "{\"code\":%s,\"data\":%s,\"msg\":\"%s\"}";
 
-    if(lwan_request_get_post_param (request, "action") == NULL)
-    {
+    if (lwan_request_get_post_param(request, "action") == NULL) {
         char code[] = "202";
         char msg[] = "no action";
         char data_buf[128];
         char response_buf_fmt_buf[256];
 
-        sprintf (data_buf, "\"\"");
-        sprintf (response_buf_fmt_buf, response_buf_fmt, code, data_buf, msg);
-        lwan_strbuf_set_static (response->buffer, response_buf_fmt_buf,
-                               sizeof (response_buf_fmt_buf) - 1);
+        sprintf(data_buf, "\"\"");
+        sprintf(response_buf_fmt_buf, response_buf_fmt, code, data_buf, msg);
+        lwan_strbuf_set_static(response->buffer, response_buf_fmt_buf,
+                               sizeof(response_buf_fmt_buf) - 1);
         return HTTP_OK;
     }
-    if(strcmp (lwan_request_get_post_param (request, "action"), "addUser") ==
-        0)
-    {
-        const char* account = lwan_request_get_post_param (request, "account");
-        const char* pwd = lwan_request_get_post_param (request, "pwd");
+    if (strcmp(lwan_request_get_post_param(request, "action"), "addUser") ==
+        0) {
+        const char *account = lwan_request_get_post_param(request, "account");
+        const char *pwd = lwan_request_get_post_param(request, "pwd");
 
-        if(account == NULL || pwd == NULL)
-        {
+        if (account == NULL || pwd == NULL) {
             char code[] = "203";
             char msg[] = "no action";
             char data_buf[128];
             char response_buf_fmt_buf[256];
 
-            sprintf (data_buf, "\"\"");
-            sprintf (response_buf_fmt_buf, response_buf_fmt, code, data_buf,
+            sprintf(data_buf, "\"\"");
+            sprintf(response_buf_fmt_buf, response_buf_fmt, code, data_buf,
                     msg);
-            lwan_strbuf_set_static (response->buffer, response_buf_fmt_buf,
-                                   sizeof (response_buf_fmt_buf) - 1);
+            lwan_strbuf_set_static(response->buffer, response_buf_fmt_buf,
+                                   sizeof(response_buf_fmt_buf) - 1);
             return HTTP_OK;
         }
         // if (model_user_add (
@@ -49,20 +46,20 @@ LWAN_HANDLER_ROUTE (login, "/login")
         //     strlen (lwan_request_get_post_param (request, "account")),
         //     lwan_request_get_post_param (request, "pwd"),
         //     strlen (lwan_request_get_post_param (request, "pwd"))) == 0)
-            // {
+        // {
 
-            //     char code[] = "200";
-            //     char msg[] = "";
-            //     char data_buf[128];
-            //     char response_buf_fmt_buf[256];
+        //     char code[] = "200";
+        //     char msg[] = "";
+        //     char data_buf[128];
+        //     char response_buf_fmt_buf[256];
 
-            //     sprintf (data_buf, "\"\"");
-            //     sprintf (response_buf_fmt_buf, response_buf_fmt, code, data_buf,
-            //             msg);
-            //     lwan_strbuf_set_static (response->buffer, response_buf_fmt_buf,
-            //                            sizeof (response_buf_fmt_buf) - 1);
-            // }
-            // else
+        //     sprintf (data_buf, "\"\"");
+        //     sprintf (response_buf_fmt_buf, response_buf_fmt, code, data_buf,
+        //             msg);
+        //     lwan_strbuf_set_static (response->buffer, response_buf_fmt_buf,
+        //                            sizeof (response_buf_fmt_buf) - 1);
+        // }
+        // else
         // {
         //     char code[] = "201";
         //     char msg[] = "account exist";
