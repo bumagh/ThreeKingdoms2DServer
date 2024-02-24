@@ -1,5 +1,5 @@
 #include "user.h"
-#include "yyjson.h"
+#include "../../Library/Json/Yyjson/yyjson.h"
 #include <sqlite3.h>
 #include <stdio.h>
 #include <string.h>
@@ -118,13 +118,13 @@ void freedb () {}
 // 1 exist 0 ok 2 error
 int addUser (char* account, int account_len, char* pwd, int pwd_len)
 { // 添加用户
-    // int selret = selectByKey (account);
-    // if (selret == 1)
-    //     return 1;
-    // else if (selret == -1)
-    //     return 2;
-    // else
-    //     return write(account, account_len, pwd, pwd_len);
+    int selret = selectByKey (account);
+    if(selret == 1)
+        return 1;
+    else if(selret == -1)
+        return 2;
+    else
+        return write (account, account_len, pwd, pwd_len);
 }
 // 1 not exist 0 ok 2 error
 int loginUser (char* account, int account_len, char* pwd, int pwd_len)
