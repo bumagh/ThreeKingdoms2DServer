@@ -9,8 +9,6 @@ static void free_strbuf (void* data)
     lwan_strbuf_free ((struct lwan_strbuf*)data);
 }
 
-
-
 LWAN_HANDLER_ROUTE (heartbeat, "/heartbeat")
 {
     enum lwan_http_status status = lwan_request_websocket_upgrade (request);
