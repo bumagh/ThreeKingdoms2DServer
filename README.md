@@ -5,4 +5,5 @@ ThreeKingdoms2DServer
     在源码文件夹编译
     放在 /root/lwan/src/samples/
 # todo
-- [] 注册登录
+- [] 对接redis
+- [] 增加广播enterGame的api

@@ -3,6 +3,7 @@ file(GLOB_RECURSE SOURCES "src/main.c")
 
 add_executable(tk
 	src/App/Controller/LoginController.c
+	src/App/Common/util.c
 	src/App/Controller/WsController.c
 	src/Library/Json/Yyjson/yyjson.c
 	src/App/Model/user.c
