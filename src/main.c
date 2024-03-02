@@ -1,21 +1,33 @@
 
+#include "App/Common/util.h"
 #include "App/Controller/WsController.h"
 #include "App/Model/user.h"
 #include "Library/Json/Yyjson/yyjson.h"
 #include "lwan.h"
 #include "lwan-pubsub.h"
-#include "Common/util.h"
-#include <stdlib.h>
 #include <errno.h>
-static struct lwan_pubsub_topic* notice;
+#include <stdlib.h>
+static struct lwan_pubsub_topic *notice;
 
+void handleNoticeApi(const char *json, char *ret)
+{
+    yyjson_doc *doc = yyjson_read(json, strlen(json), 0);
+    yyjson_val *root = yyjson_doc_get_root(doc);
+    yyjson_val *type = yyjson_obj_get(root, "type");
+        strcpy(ret, yyjson_get_str(type));
+    if (strcmp(yyjson_get_str(type), "EnterGame") == 0) {
+        strcpy(ret, "EnterGame");
+    }
+}
 static void pub_depart_message(void *data1, void *data2)
 {
     char buffer[128];
     int r;
+    char response_buf_fmt[256] =
+        "{\"type\":\"%s\",\"data\":{\"pid\":\"%d\"},\"msg\":\"%s\"}";
+    r = snprintf(buffer, sizeof(buffer), response_buf_fmt, "leave",
+                 (int)(intptr_t)data2, "leave");
 
-    r = snprintf(buffer, sizeof(buffer), "*** User%d has departed the chat!\n",
-                 (int)(intptr_t)data2);
     if (r < 0 || (size_t)r >= sizeof(buffer))
         return;
 
@@ -45,12 +57,14 @@ LWAN_HANDLER_ROUTE(wsnotice, "/wsnotice")
     // lwan_strbuf_printf (response->buffer, "*** Welcome to the chat,
     // User%d!\n",
     //                    user_id);
-    lwan_response_websocket_write_text(request);
+    // lwan_response_websocket_write_text(request);
 
     coro_defer2(request->conn->coro, pub_depart_message, notice,
                 (void *)(intptr_t)user_id);
-    lwan_pubsub_publishf(notice, "*** User%d has joined the chat!\n", user_id);
+    char response_buf_fmt[256] =
+        "{\"type\":\"%s\",\"data\":{\"pid\":\"%d\"},\"msg\":\"%s\"}";
 
+    lwan_pubsub_publishf(notice, response_buf_fmt, "enter", user_id, "enter");
     while (true) {
         switch (lwan_response_websocket_read(request)) {
         case ENOTCONN:   /* read() called before connection is websocket */
@@ -60,7 +74,7 @@ LWAN_HANDLER_ROUTE(wsnotice, "/wsnotice")
         case EAGAIN: /* Nothing is available from other clients */
             while ((msg = lwan_pubsub_consume(sub))) {
                 const struct lwan_value *value = lwan_pubsub_msg_value(msg);
-
+                lwan_status_info(value->value);
                 lwan_strbuf_set(response->buffer, value->value, value->len);
                 lwan_pubsub_msg_done(msg);
                 lwan_response_websocket_write_text(request);
@@ -71,12 +85,16 @@ LWAN_HANDLER_ROUTE(wsnotice, "/wsnotice")
                 sleep_time += 500;
             break;
 
-        case 0:
-
-            lwan_pubsub_publishf(notice, "User%d: %.*s\n", user_id,
-                                 (int)lwan_strbuf_get_length(response->buffer),
-                                 lwan_strbuf_get_buffer(response->buffer));
+        case 0: {
+            char response_buf_fmt[256] =
+                "{\"type\":\"%s\",\"data\":{\"pid\":\"%d\"},\"msg\":\"%s\"}";
+            char buf[256] = {0};
+            char bufRet[256] = {0};
+            sprintf(buf,"%.*s",lwan_strbuf_get_length(response->buffer),lwan_strbuf_get_buffer(response->buffer));
+            handleNoticeApi(buf, bufRet);
+            lwan_pubsub_publishf(notice, response_buf_fmt, "notice", user_id,bufRet);
             break;
+        }
         }
     }
 
@@ -87,13 +105,12 @@ out:
     __builtin_unreachable();
 }
 
-
-int main (void)
+int main(void)
 {
-    notice = lwan_pubsub_new_topic ();
+    notice = lwan_pubsub_new_topic();
 
-    lwan_main ();
+    lwan_main();
 
-    lwan_pubsub_free_topic (notice);
+    lwan_pubsub_free_topic(notice);
     return 0;
 }
