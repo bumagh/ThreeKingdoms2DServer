@@ -42,7 +42,7 @@ LWAN_HANDLER_ROUTE (wsnotice, "/wsnotice")
     enum lwan_http_status status;
     static int total_user_count;
     int user_id;
-    uint64_t sleep_time = 1000;
+    uint64_t sleep_time = 100;
 
     sub = lwan_pubsub_subscribe (notice);
     if(!sub)
@@ -82,11 +82,11 @@ LWAN_HANDLER_ROUTE (wsnotice, "/wsnotice")
                 lwan_strbuf_set (response->buffer, value->value, value->len);
                 lwan_pubsub_msg_done (msg);
                 lwan_response_websocket_write_text (request);
-                sleep_time = 500;
+                sleep_time = 100;
             }
             lwan_request_sleep (request, sleep_time);
             if(sleep_time <= 8000)
-                sleep_time += 500;
+                sleep_time += 100;
             break;
 
         case 0:

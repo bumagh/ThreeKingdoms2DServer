@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 char* err = NULL;
-char* dbpath = "/root/work/gitrep/lwan/src/samples/ThreeKingdoms2DServer/data/user.db";
+char* dbpath = "/root/lwan/src/samples/ThreeKingdoms2DServer/data/user.db";
 static int select_callback (void* ret, int argc, char** argv, char** azColName)
 {
     int i;
